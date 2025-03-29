@@ -72,7 +72,7 @@ async def periodic_check():
 
 # Command to trigger trade block check
 @bot.command()
-async def check_trade_block(ctx.channel, api):
+async def check_trade_block(channel, api):
     """Command to check the trade block for updates"""
     print("Checktradeblock command triggered")
     updated_blocks = check_trade_block()
