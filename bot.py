@@ -6,8 +6,14 @@ from discord.ext import commands, tasks
 from fantraxapi import FantraxAPI
 
 # Initialize Fantrax API with the league ID
-league_id = os.getenv("FANTRAX_LEAGUE_ID")  # Make sure your league ID is set in environment variables
-api = FantraxAPI(league_id)
+league_id = os.getenv("FANTRAX_LEAGUE_ID") # Make sure your league ID is set in environment variables
+
+# Create a custom session
+session = requests.Session()
+
+
+# Initialize FantraxAPI with your custom authenticated session
+api = FantraxAPI(league_id, session=session)
 
 
 # Set the prefix that precedes all bot commands in Discord
