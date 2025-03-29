@@ -125,7 +125,7 @@ async def scheduled_check():
 
 @bot.event
 async def on_ready():
-    print(f'Logged in as {client.user}')
+    print(f'Logged in as {bot.user}')
 
 @bot.event
 async def on_message(message):
@@ -135,4 +135,4 @@ async def on_message(message):
 
 
 # Run the bot
-client.run(os.getenv('DISCORD_TOKEN'))
+bot.run(os.getenv('DISCORD_TOKEN'))
