@@ -9,7 +9,9 @@ from fantraxapi import FantraxAPI
 league_id = os.getenv("FANTRAX_LEAGUE_ID")  # Make sure your league ID is set in environment variables
 api = FantraxAPI(league_id)
 
-bot_prefix = "!"
+
+# Set the prefix that precedes all bot commands in Discord
+bot_prefix = "!"  # Directly setting the command prefix
 intents = discord.Intents.default()
 intents.message_content = True
 intents.presences = True
