@@ -64,8 +64,21 @@ async def checktradeblock_command(ctx):
 
 @bot.event
 async def on_ready():
+    # Retrieve credentials from environment variables
+    username = os.getenv("FANTRAX_USERNAME")
+    password = os.getenv("FANTRAX_PASSWORD")
+
+    # Attempt to log in to the Fantrax API
+    try:
+        api.login(username, password)
+        print("Logged in to Fantrax API successfully.")
+    except Exception as e:
+        print(f"Failed to log in to Fantrax API: {e}")
+    return  # Optionally exit early if login fails
+    
     print(f"Bot logged in as {bot.user}")
     print(f"Command prefix: {bot_prefix}")
+    
     periodic_check.start()  # Start the hourly check when the bot is ready
 
 @bot.event
