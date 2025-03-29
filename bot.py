@@ -8,13 +8,18 @@ from fantraxapi import FantraxAPI
 
 # Initialize Fantrax API with the league ID
 league_id = os.getenv("FANTRAX_LEAGUE_ID") # Make sure your league ID is set in environment variables
+api_token = os.getenv("DISCORD_TOKEN")  # Make sure this is set with a valid token
 
-# Create a custom session
 session = requests.Session()
+if api_token:
+    session.headers.update({"Authorization": f"Bearer {api_token}"})
+else:
+    # If using cookie-based auth, set the session cookie:
+    session.cookies.set("session_cookie_name", "your_cookie_value")
+    print("No API token provided. Check your authentication method!")
 
-
-# Initialize FantraxAPI with your custom authenticated session
-api = FantraxAPI(league_id, session)
+# Initialize the FantraxAPI with your custom session
+api = FantraxAPI(league_id, session=session)
 
 
 # Set the prefix that precedes all bot commands in Discord
