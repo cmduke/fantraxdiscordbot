@@ -56,6 +56,37 @@ async def check_trade_block(channel, api):
     else:
         await channel.send("No recent updates to the trade block.")
 
+
+# Task to check the trade block every hour
+@tasks.loop(hours=1)
+async def periodic_check():
+    # Change this to the channel you want the bot to post in
+    channel = bot.get_channel(YOUR_CHANNEL_ID)  # Replace YOUR_CHANNEL_ID with the actual channel ID
+    if channel:
+        await send_trade_block_updates(channel)
+
+# Command to trigger trade block check
+@bot.command()
+async def checktradeblock(ctx):
+    """Command to check the trade block for updates"""
+    updated_blocks = check_trade_block()
+    
+    if updated_blocks:
+        response = "Here are the teams with updated trade blocks in the past hour:\n"
+        for block in updated_blocks:
+            response += f"- {block.team.name}: {block.note}\n"
+    else:
+        response = "No trade block updates in the last hour."
+    
+    await ctx.send(response)
+
+# Start the periodic task when the bot is ready
+@bot.event
+async def on_ready():
+    print(f"Bot logged in as {bot.user}")
+    periodic_check.start()  # Start the hourly check when the bot is ready
+
+
 async def scheduled_check():
     await bot.wait_until_ready()
     channel = bot.get_channel(1355397798161416412)  # Replace with your channel ID
