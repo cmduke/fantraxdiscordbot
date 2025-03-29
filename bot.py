@@ -22,6 +22,10 @@ intents.members = True           # Allows your bot to track member updates (join
 # Initialize the bot with your token
 client = discord.Client(intents=intents)
 
+
+bot = commands.Bot(command_prefix=config["bot_prefix"], intents=intents)
+
+
 def get_recent_trade_blocks(api):
     # Fetch the trade block data
     trade_blocks = api.get_trade_block()
