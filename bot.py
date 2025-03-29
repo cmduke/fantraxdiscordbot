@@ -3,6 +3,7 @@ import os
 import asyncio
 import requests
 from fantraxapi import FantraxAPI
+from discord.ext import commands, tasks
 from datetime import datetime, timedelta
 
 # Initialize Fantrax API with the league ID
