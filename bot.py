@@ -1,9 +1,10 @@
 import discord
 import os
 import asyncio
+import requests
+from fantraxapi import FantraxAPI
 from discord.ext import commands, tasks
 from datetime import datetime, timedelta
-from fantraxapi import FantraxAPI
 
 # Initialize Fantrax API with the league ID
 league_id = os.getenv("FANTRAX_LEAGUE_ID")  # Make sure your league ID is set in environment variables
@@ -20,8 +21,10 @@ intents.message_content = True  # Allows your bot to read message content
 intents.presences = True         # Allows your bot to track presence (online/offline) status
 intents.members = True           # Allows your bot to track member updates (joining, leaving, etc.)
 
+
 # Initialize the bot with your token
 bot = commands.Bot(command_prefix=bot_prefix, intents=intents)
+
 
 def get_recent_trade_blocks(api):
     # Fetch the trade block data
@@ -58,6 +61,7 @@ async def check_trade_block(channel, api):
     else:
         await channel.send("No recent updates to the trade block.")
 
+
 # Task to check the trade block every hour
 @tasks.loop(hours=1)
 async def periodic_check():
@@ -68,15 +72,15 @@ async def periodic_check():
 
 # Command to trigger trade block check
 @bot.command()
-async def check(ctx):
+async def checktradeblock (channel, api):
     """Command to check the trade block for updates"""
     print("Checktradeblock command triggered")
-    updated_blocks = get_recent_trade_blocks(api)
+    updated_blocks = check_trade_block()
     
     if updated_blocks:
         response = "Here are the teams with updated trade blocks in the past hour:\n"
         for block in updated_blocks:
-            response += f"- {block['team']['name']}: {block['note']}\n"
+            response += f"- {block.team.name}: {block.note}\n"
     else:
         response = "No trade block updates in the last hour."
     
@@ -86,38 +90,10 @@ async def check(ctx):
 @bot.event
 async def on_ready():
     print(f"Bot logged in as {bot.user}")
-    print(f"Command prefix: {bot_prefix}")
-    periodic_check.start()  # Start the hourly check when the bot is ready
-
-# Handling messages
-@bot.event
-async def on_message(message):
-    if message.content.startswith('!hello'):
-        await message.channel.send('Hello!')
-    await bot.process_commands(message)  # Process commands here
+    print(f"Bot prefix: {bot_prefix}")
+    # Start the periodic trade block check loop
+    periodic_check.start() # Start the hourly check when the bot is ready
+    await bot.process_commands(message)
 
 # Run the bot
 bot.run(os.getenv('DISCORD_TOKEN'))
-
-
-
-# def get_transactions():
-#     league_id = os.getenv('FANTRAX_LEAGUE_ID')
-#     api_key = os.getenv('FANTRAX_API_KEY')  # Make sure to set this environment variable in Railway
-
-#     url = f'https://api.fantrax.com/league/{league_id}/transactions'
-    
-#     headers = {
-#         'Authorization': f'Bearer {api_key}'
-#     }
-
-#     response = requests.get(url, headers=headers)
-    
-#     if response.status_code == 200:
-#         transactions = response.json()
-#         # For example, we can filter for new trade transactions
-#         new_trades = [tx for tx in transactions if tx['type'] == 'trade']
-#         return new_trades
-#     else:
-#         print(f"Error fetching transactions: {response.status_code}")
-#         return []
