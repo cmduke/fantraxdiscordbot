@@ -123,11 +123,11 @@ async def scheduled_check():
 #         print(f"Error fetching transactions: {response.status_code}")
 #         return []
 
-@client.event
+@bot.event
 async def on_ready():
     print(f'Logged in as {client.user}')
 
-@client.event
+@bot.event
 async def on_message(message):
     if message.content.startswith('!hello'):
         await message.channel.send('Hello!')
