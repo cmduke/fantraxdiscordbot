@@ -23,9 +23,6 @@ intents.members = True           # Allows your bot to track member updates (join
 
 
 # Initialize the bot with your token
-client = discord.Client(intents=intents)
-
-
 bot = commands.Bot(command_prefix=bot_prefix, intents=intents)
 
 
@@ -71,11 +68,11 @@ async def periodic_check():
     # Change this to the channel you want the bot to post in
     channel = bot.get_channel(1355397798161416412)  # Replace YOUR_CHANNEL_ID with the actual channel ID
     if channel:
-        await send_trade_block_updates(channel)
+        await check_trade_block(channel, api)
 
 # Command to trigger trade block check
 @bot.command()
-async def checktradeblock(ctx):
+async def check_trade_block(ctx.channel, api):
     """Command to check the trade block for updates"""
     print("Checktradeblock command triggered")
     updated_blocks = check_trade_block()
@@ -93,6 +90,7 @@ async def checktradeblock(ctx):
 @bot.event
 async def on_ready():
     print(f"Bot logged in as {bot.user}")
+    print(f"Command prefix: {config['bot_prefix']}")
     periodic_check.start()  # Start the hourly check when the bot is ready
 
 
