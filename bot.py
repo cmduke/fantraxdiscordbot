@@ -14,7 +14,7 @@ session = requests.Session()
 
 
 # Initialize FantraxAPI with your custom authenticated session
-api = FantraxAPI(league_id, session=session)
+api = FantraxAPI(league_id, session)
 
 
 # Set the prefix that precedes all bot commands in Discord
