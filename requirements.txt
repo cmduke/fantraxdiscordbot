@@ -1,2 +1,6 @@
 discord.py
 requests
+os
+asyncio
+fantraxapi
+datetime
