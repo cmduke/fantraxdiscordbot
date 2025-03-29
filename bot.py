@@ -77,6 +77,7 @@ async def periodic_check():
 @bot.command()
 async def checktradeblock(ctx):
     """Command to check the trade block for updates"""
+    print("Checktradeblock command triggered")
     updated_blocks = check_trade_block()
     
     if updated_blocks:
