@@ -61,7 +61,7 @@ async def check_trade_block(channel, api):
 @tasks.loop(hours=1)
 async def periodic_check():
     # Change this to the channel you want the bot to post in
-    channel = bot.get_channel(YOUR_CHANNEL_ID)  # Replace YOUR_CHANNEL_ID with the actual channel ID
+    channel = bot.get_channel(1355397798161416412)  # Replace YOUR_CHANNEL_ID with the actual channel ID
     if channel:
         await send_trade_block_updates(channel)
 
