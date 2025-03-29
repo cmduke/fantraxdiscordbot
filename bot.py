@@ -6,8 +6,8 @@ from fantraxapi import FantraxAPI
 from datetime import datetime, timedelta
 
 # Initialize Fantrax API with the league ID
-league_id = os.getenv(f5r6pl48m1um17sw)  # Make sure your league ID is set in environment variables
-api = FantraxAPI(f5r6pl48m1um17sw)
+league_id = os.getenv("FANTRAX_LEAGUE_ID")  # Make sure your league ID is set in environment variables
+api = FantraxAPI(league_id)
 
 # Create an instance of Intents and enable the specific ones you need
 intents = discord.Intents.default()
