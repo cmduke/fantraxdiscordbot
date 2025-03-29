@@ -1,10 +1,9 @@
 import discord
 import os
 import asyncio
-import requests
-from fantraxapi import FantraxAPI
 from discord.ext import commands, tasks
 from datetime import datetime, timedelta
+from fantraxapi import FantraxAPI
 
 # Initialize Fantrax API with the league ID
 league_id = os.getenv("FANTRAX_LEAGUE_ID")  # Make sure your league ID is set in environment variables
@@ -21,10 +20,8 @@ intents.message_content = True  # Allows your bot to read message content
 intents.presences = True         # Allows your bot to track presence (online/offline) status
 intents.members = True           # Allows your bot to track member updates (joining, leaving, etc.)
 
-
 # Initialize the bot with your token
 bot = commands.Bot(command_prefix=bot_prefix, intents=intents)
-
 
 def get_recent_trade_blocks(api):
     # Fetch the trade block data
@@ -61,7 +58,6 @@ async def check_trade_block(channel, api):
     else:
         await channel.send("No recent updates to the trade block.")
 
-
 # Task to check the trade block every hour
 @tasks.loop(hours=1)
 async def periodic_check():
@@ -72,15 +68,15 @@ async def periodic_check():
 
 # Command to trigger trade block check
 @bot.command()
-async def check_trade_block(channel, api):
+async def check(ctx):
     """Command to check the trade block for updates"""
     print("Checktradeblock command triggered")
-    updated_blocks = check_trade_block()
+    updated_blocks = get_recent_trade_blocks(api)
     
     if updated_blocks:
         response = "Here are the teams with updated trade blocks in the past hour:\n"
         for block in updated_blocks:
-            response += f"- {block.team.name}: {block.note}\n"
+            response += f"- {block['team']['name']}: {block['note']}\n"
     else:
         response = "No trade block updates in the last hour."
     
@@ -90,16 +86,19 @@ async def check_trade_block(channel, api):
 @bot.event
 async def on_ready():
     print(f"Bot logged in as {bot.user}")
-    print(f"Command prefix: {config['bot_prefix']}")
+    print(f"Command prefix: {bot_prefix}")
     periodic_check.start()  # Start the hourly check when the bot is ready
 
+# Handling messages
+@bot.event
+async def on_message(message):
+    if message.content.startswith('!hello'):
+        await message.channel.send('Hello!')
+    await bot.process_commands(message)  # Process commands here
 
-async def scheduled_check():
-    await bot.wait_until_ready()
-    channel = bot.get_channel(1355397798161416412)  # Replace with your channel ID
-    while not bot.is_closed():
-        await check_trade_block(channel, api)  # Check for recent trade block updates
-        await asyncio.sleep(3600)  # Wait for an hour before checking again
+# Run the bot
+bot.run(os.getenv('DISCORD_TOKEN'))
+
 
 
 # def get_transactions():
@@ -122,17 +121,3 @@ async def scheduled_check():
 #     else:
 #         print(f"Error fetching transactions: {response.status_code}")
 #         return []
-
-@bot.event
-async def on_ready():
-    print(f'Logged in as {bot.user}')
-
-@bot.event
-async def on_message(message):
-    if message.content.startswith('!hello'):
-        await message.channel.send('Hello!')
-
-
-
-# Run the bot
-bot.run(os.getenv('DISCORD_TOKEN'))
