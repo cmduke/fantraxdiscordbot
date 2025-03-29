@@ -10,6 +10,9 @@ from datetime import datetime, timedelta
 league_id = os.getenv("FANTRAX_LEAGUE_ID")  # Make sure your league ID is set in environment variables
 api = FantraxAPI(league_id)
 
+# Set the prefix that precedes all bot commands in Discord
+bot_prefix = "!"  # Directly setting the command prefix
+
 # Create an instance of Intents and enable the specific ones you need
 intents = discord.Intents.default()
 
@@ -23,7 +26,7 @@ intents.members = True           # Allows your bot to track member updates (join
 client = discord.Client(intents=intents)
 
 
-bot = commands.Bot(command_prefix=config["bot_prefix"], intents=intents)
+bot = commands.Bot(command_prefix=bot_prefix, intents=intents)
 
 
 def get_recent_trade_blocks(api):
