@@ -62,11 +62,13 @@ def create_authenticated_session(username: str, password: str) -> requests.Sessi
     print("Session cookies after login:", session.cookies.get_dict())
     
     # Check if login was successful by verifying presence of JSESSIONID.
-    jsessionid = session.cookies.get("JSESSIONID", domain="www.fantrax.com")
-    if not jsessionid:
-        raise Exception("Login appears to have failed: JSESSIONID not found in cookies.")
-    
-    print("Login successful. JSESSIONID:", jsessionid)
+    auth_cookie = session.cookies.get("JSESSIONID", domain="www.fantrax.com")
+    if not auth_cookie:
+        # Fall back to checking for the "uig" cookie.
+        auth_cookie = session.cookies.get("uig", domain="fantrax.com") or session.cookies.get("uig", domain="www.fantrax.com")
+    if not auth_cookie:
+        raise Exception("Login appears to have failed: No valid authentication cookie found.")
+    print("Login successful. Auth cookie:", auth_cookie)
     return session
 
 if __name__ == "__main__":
